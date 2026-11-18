@@ -475,23 +475,6 @@ jobs:
           fi
           echo "=== ccache Statistics ==="
           ccache -s
-      - name: Patch Kernel Image for KPM (sukisu / zephyrsu)
-        if: matrix.variant == 'sukisu' || matrix.variant == 'zephyrsu'
-        run: |
-          set -euo pipefail
-          echo "Patching compiled Image with SukiSU KernelPatch (KPM)..."
-          cp sukisu_patch/kpm/patch_linux kernel/out/arch/arm64/boot/patch_linux
-          cp sukisu_patch/kpm/kpimg kernel/out/arch/arm64/boot/kpimg
-          (
-            cd kernel/out/arch/arm64/boot
-            ls -lh Image
-            chmod +x patch_linux
-            ./patch_linux
-            [ -s oImage ] || { echo "FATAL: patch_linux did not produce a non-empty oImage!" >&2; exit 1; }
-            mv -f oImage Image
-            rm -f patch_linux kpimg
-            ls -lh Image
-          )
       - name: Package AnyKernel3 Flashable ZIP
         run: |
           git clone https://github.com/chainonyourdoor/AnyKernel3-Luminaire.git --depth=1 anykernel
