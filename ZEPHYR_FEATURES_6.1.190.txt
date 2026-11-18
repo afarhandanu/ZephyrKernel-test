@@ -39,7 +39,7 @@ TABLE OF CONTENTS
     - KMI reserve slots preserved (deliberately skipped FUT_OFF_MMSHARED to prevent
       MediaTek vendor driver ABI mismatches).
 
-[*] BORE CPU Scheduler (Burst-Oriented Response Enhancer v6.8.0-rc1):
+[*] BORE CPU Scheduler (Burst-Oriented Response Enhancer v7.0.0):
     - Config: CONFIG_SCHED_BORE=y
     - Purpose: Drastically reduces UI micro-stutters and input latency by favoring
       interactive burst tasks over sustained background CPU hogs.

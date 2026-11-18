@@ -22,7 +22,7 @@
 ### 🔥 CPU, Scheduler, & Toolchain
 - **Upstream Linux 6.1.190 LTS Core:** Fully synced to upstream Linux 6.1.190 LTS with verified Android Common Kernel (ACK) fixups and MediaTek Dimensity 7300-Ultra / MT6878 compatibility (aligned with SAGA 190 architecture with `timer_delete_sync` and `DEFINE_FREE(fwnode_handle)` shims).
 - **Power-Efficient Workqueues (`CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y`):** Shifts workqueues to energy-efficient CPU cores when idle, reducing background battery drain significantly.
-- **BORE CPU Scheduler (`v6.8.0-rc1`):** *Burst-Oriented Response Enhancer* (`kernel.sched_bore = 1`) for ultra-responsive UI rendering, low touch latency, and smooth multitasking under heavy load.
+- **BORE CPU Scheduler (`v7.0.0`):** *Burst-Oriented Response Enhancer* (`kernel.sched_bore = 1`) for ultra-responsive UI rendering, low touch latency, and smooth multitasking under heavy load.
 - **Neutron Clang `24.0.0git` + LLD `24.0.0`:** Configurable Link-Time Optimization supporting **ThinLTO (`CONFIG_LTO_CLANG_THIN=y`)**, **FullLTO (`CONFIG_LTO_CLANG_FULL=y`)**, or **NoLTO (`CONFIG_LTO_NONE=y`)**, paired with **Clang Control Flow Integrity (`CONFIG_CFI_CLANG=y`)** and persistent **`ccache`** compiler caching.
 - **Mainline Catch-up Backports:** Includes `schedutil_catchup`, `workqueue_catchup`, and `ufs_writebooster_catchup` for optimal frequency scaling and UFS storage throughput.
 
@@ -50,10 +50,11 @@
 - **Baseband Security Guard (`CONFIG_BBG=y`):** Linux Security Module protecting critical modem/IMEI partitions (`nvram`, `nvdata`, `persist`, `efs`) from unauthorized tampering.
 
 ### 🛡️ Multi-Variant Root & Stealth Integration
-- **7 Selectable Root Variants (Single or Parallel `all` Matrix Build):**
+- **8 Selectable Root Variants (Single or Parallel `all` Matrix Build):**
   - **FinaSU (`v1.5.0+`):** Next-generation kernel-based root with dual-slot signature verification (supports both official **FinaSU Manager** and **KernelSU Manager**).
   - **KernelSU-Next (`dev-susfs`):** Feature-rich KernelSU fork by `KernelSU-Next` with native SUSFS integration.
   - **SukiSU-Ultra (`builtin` + KPM):** Enhanced root solution with built-in **Kernel Patch Module (`CONFIG_KPM=y`)** support.
+  - **ZephyrSU (`main`):** SukiSU-Ultra fork with the full Nova + FinaSU manager feature combine, full SUSFS integration.
   - **Official KernelSU (`tiann`):** Classic upstream KernelSU with full SUSFS patches.
   - **BakaSU:** Lightweight, performant root solution with full SUSFS integration.
   - **KowSU:** Enhanced root variant with native SUSFS cloaking support.
@@ -72,11 +73,12 @@
      - `finasu` — **FinaSU v1.5.0+** + SUSFS v2.4.0 Built-in (Default)
      - `ksunext` — **KernelSU-Next (`dev-susfs`)** + SUSFS Built-in
      - `sukisu` — **SukiSU-Ultra (`builtin` + KPM)** + SUSFS Built-in
+     - `zephyrsu` — **ZephyrSU (`main`)** + SUSFS Built-in
      - `ksu` — **Official KernelSU (`tiann`)** + SUSFS Built-in
      - `bakasu` — **BakaSU** + SUSFS Built-in
      - `kowsu` — **KowSU** + SUSFS Built-in
      - `vanilla` — **Non-Root / Pure GKI** (for Magisk / APatch / rootless users)
-     - `all` — **Parallel Matrix Build** (builds all 7 variants simultaneously on parallel runners and publishes them into a single unified GitHub Release!)
+     - `all` — **Parallel Matrix Build** (builds all 8 variants simultaneously on parallel runners and publishes them into a single unified GitHub Release!)
    - **LTO Optimization (`lto_mode`):**
      - `thin` — **ThinLTO** (Default)
      - `full` — **FullLTO**

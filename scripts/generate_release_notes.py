@@ -61,7 +61,7 @@ def main():
 
 ### ⚡ Performance & CPU Scheduler Enhancements
 
-- **BORE (Burst-Oriented Response Enhancer) v6.8.0-rc1:**
+- **BORE (Burst-Oriented Response Enhancer) v7.0.0:**
   - Burst-score algorithm actively detects and prioritizes interactive, touch-driven UI threads (`kernel.sched_bore = 1`).
   - Eliminates UI frame drops, micro-stutters, and improves touchscreen input latency under heavy background load.
 - **Power-Efficient Workqueues (`CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y`):**
@@ -126,6 +126,7 @@ def main():
   - `finasu`: FinaSU v1.5.0+ with dual-slot signature verification + SuSFS {susfs_ver}
   - `ksunext`: KernelSU-Next with native SuSFS {susfs_ver} integration
   - `sukisu`: SukiSU-Ultra with Kernel Patch Module (`CONFIG_KPM=y`) + SuSFS {susfs_ver}
+  - `zephyrsu`: ZephyrSU (SukiSU-Ultra fork, M1-M6 combine) with SuSFS {susfs_ver}
   - `ksu`: Upstream official KernelSU with SuSFS {susfs_ver}
   - `bakasu`: BakaSU root solution with SuSFS {susfs_ver}
   - `kowsu`: KowSU root solution with SuSFS {susfs_ver}
