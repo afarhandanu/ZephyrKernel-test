@@ -61,7 +61,7 @@ def main():
 
 ### ⚡ Performance & CPU Scheduler Enhancements
 
-- **BORE (Burst-Oriented Response Enhancer) v6.8.0-rc1:**
+- **BORE (Burst-Oriented Response Enhancer) v7.0.0:**
   - Burst-score algorithm actively detects and prioritizes interactive, touch-driven UI threads (`kernel.sched_bore = 1`).
   - Eliminates UI frame drops, micro-stutters, and improves touchscreen input latency under heavy background load.
 - **Power-Efficient Workqueues (`CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y`):**
