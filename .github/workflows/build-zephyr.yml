@@ -10,7 +10,7 @@ on:
           - "finasu"
           - "ksunext"
           - "sukisu"
-                    - "zephyrsu"
+          - "zephyrsu"
           - "ksu"
           - "bakasu"
           - "kowsu"
@@ -266,17 +266,17 @@ jobs:
             echo "Patching SukiSU upstream policydb->latest_granting typo in rules.c..."
             sed -i 's/policydb->latest_granting/pol->latest_granting/g' "${KSU_DIR}/kernel/selinux/rules.c"
             ./scripts/config --file arch/arm64/configs/gki_defconfig -e KPM
-                      elif [ "$VARIANT" = "zephyrsu" ]; then
-                                  # ZephyrSU setup.sh takes a commit/tag/branch (no "builtin" arg like SukiSU):
-                                              # "main" pins the verified M1-M6 combine tree (7c22219); no-arg would
-                                                          # check out the stale v4.3.0-r2 tag instead. Manager cert is already
-                                                                      # pinned in ZephyrSU's own kernel/Kbuild (0x02f5 / 7136496b...), so no
-                                                                                  # second-signature hack like FinaSU. The sukisu compat fixes are
-                                                                                              # already upstream in ZephyrSU (fallthrough; + pol->latest_granting),
-                                                                                                          # so they are intentionally not repeated here. SUSFS uses the default
-                                                                                                                      # simonpunk gki-android14-6.1 branch, same as sukisu/finasu.
-                                                                                                                                  curl -LSs "https://raw.githubusercontent.com/afarhandanu/ZephyrSU/main/kernel/setup.sh" | bash -s main
-                                                                                                                                              KSU_DIR="KernelSU"
+          elif [ "$VARIANT" = "zephyrsu" ]; then
+            # ZephyrSU setup.sh takes a commit/tag/branch (no "builtin" arg like SukiSU):
+            # "main" pins the verified M1-M6 combine tree (7c22219); no-arg would
+            # check out the stale v4.3.0-r2 tag instead. Manager cert is already
+            # pinned in ZephyrSU's own kernel/Kbuild (0x02f5 / 7136496b...), so no
+            # second-signature hack like FinaSU. The sukisu compat fixes are
+            # already upstream in ZephyrSU (fallthrough; + pol->latest_granting),
+            # so they are intentionally not repeated here. SUSFS uses the default
+            # simonpunk gki-android14-6.1 branch, same as sukisu/finasu.
+            curl -LSs "https://raw.githubusercontent.com/afarhandanu/ZephyrSU/main/kernel/setup.sh" | bash -s main
+            KSU_DIR="KernelSU"
           elif [ "$VARIANT" = "bakasu" ]; then
             curl -LSs "https://raw.githubusercontent.com/Baka-SU/BakaSU/main/kernel/setup.sh" | bash -s main
             KSU_DIR="KernelSU"
