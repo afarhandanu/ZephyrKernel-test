@@ -105,7 +105,7 @@ rich_markdown = f"""<tg-slideshow>
 
 - Ondemand Governor (included)
 - Frame Warning Disabled
-- I/O Scheduler (MQ-Deadline, Kyber)
+- I/O Scheduler (ADIOS v3.3.0 over MQ-Deadline, Kyber, BFQ)
 </details>
 
 <details>
@@ -131,7 +131,8 @@ rich_markdown = f"""<tg-slideshow>
 <summary>Zephyr & Luminaire Tuning</summary>
 
 <table bordered>
-<tr><td>BORE v6.8.0-rc1</td></tr>
+<tr><td>BORE v7.0.0</td></tr>
+<tr><td>ADIOS v3.3.0 (Over MQ-Deadline)</td></tr>
 <tr><td>BBRv3 + FQ Default (No pfifo) + CAKE</td></tr>
 <tr><td>MPTCP (WiFi + Cell Aggregation)</td></tr>
 <tr><td>Paragon NTFS3 R/W OTG</td></tr>
@@ -171,7 +172,8 @@ rich_markdown = f"""<tg-slideshow>
 <details>
 <summary>Features & System Tuning</summary>
 
-- BORE (Burst-Oriented Response Enhancer) v6.8.0-rc1 (kernel.sched_bore = 1)
+- BORE (Burst-Oriented Response Enhancer) v7.0.0 (kernel.sched_bore = 1)
+- ADIOS v3.3.0 Adaptive Deadline I/O Scheduler (enforced over mq-deadline)
 - Power-Efficient Workqueues (CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y)
 - le9uo v1.15 Working Set Protection (MGLRU disabled for MTK stability)
 - LZ4 v1.10.0 ARM64 NEON + ZSTD v1.5.7 (from Linux 6.15)

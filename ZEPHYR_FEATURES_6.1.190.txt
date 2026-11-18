@@ -49,6 +49,13 @@ TABLE OF CONTENTS
     - Verification:
       $ cat /proc/sys/kernel/sched_bore -> Output: 1
 
+[*] ADIOS I/O Scheduler (Adaptive Deadline I/O Scheduler v3.3.0 over mq-deadline):
+    - Config: CONFIG_MQ_IOSCHED_ADIOS=y, CONFIG_MQ_IOSCHED_DEFAULT_ADIOS=y
+    - Purpose: Learning-based adaptive deadline control for blk-mq UFS storage,
+      set as default MQ scheduler and enforced over vendor mq-deadline init writes.
+    - Verification:
+      $ cat /sys/block/sda/queue/scheduler -> Output: [adios] mq-deadline kyber bfq ...
+
 [*] Power-Efficient Workqueues:
     - Config: CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y
     - Purpose: Routes unbound workqueues to power-efficient LITTLE cores when

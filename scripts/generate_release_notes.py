@@ -64,6 +64,8 @@ def main():
 - **BORE (Burst-Oriented Response Enhancer) v7.0.0:**
   - Burst-score algorithm actively detects and prioritizes interactive, touch-driven UI threads (`kernel.sched_bore = 1`).
   - Eliminates UI frame drops, micro-stutters, and improves touchscreen input latency under heavy background load.
+- **ADIOS v3.3.0 I/O Scheduler (Enforced Over `mq-deadline`):**
+  - Adaptive Deadline I/O Scheduler (`CONFIG_MQ_IOSCHED_ADIOS=y` + `CONFIG_MQ_IOSCHED_DEFAULT_ADIOS=y`) set as default block I/O scheduler, transparently overriding vendor `mq-deadline` sysfs writes for low-latency UFS storage responsiveness.
 - **Power-Efficient Workqueues (`CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y`):**
   - Dynamically routes unbound kernel workqueues to energy-efficient CPU clusters during device standby, dramatically reducing idle battery consumption.
 - **Mainline Scheduler & Workqueue Catch-up:**

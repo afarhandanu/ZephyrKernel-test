@@ -1,0 +1,30 @@
+From: ZephyrCI <kucingbalap1644@ZephyrCI>
+Subject: [PATCH] block: enforce ADIOS 3.3.0 over mq-deadline sysfs requests
+
+MediaTek vendor init scripts (init.mt6878.power.rc / init.mt6878.rc)
+explicitly write "mq-deadline" into /sys/block/sd*/queue/scheduler during
+on init and on property:sys.boot_completed=1, which would override
+CONFIG_MQ_IOSCHED_DEFAULT_ADIOS=y after boot.
+
+When CONFIG_MQ_IOSCHED_DEFAULT_ADIOS is enabled, transparently redirect
+sysfs switches targeting "mq-deadline" to "adios" while keeping
+CONFIG_MQ_IOSCHED_DEADLINE=y for full KMI/vendor compatibility and
+allowing explicit switches to other schedulers (kyber, bfq, none).
+
+---
+--- a/block/elevator.c	2026-11-19 05:20:59
++++ b/block/elevator.c	2026-11-19 05:20:59
+@@ -767,7 +767,12 @@
+ 	}
+ 
+ 	strlcpy(elevator_name, name, sizeof(elevator_name));
+-	e = elevator_get(q, strstrip(elevator_name), true);
++	strstrip(elevator_name);
++#ifdef CONFIG_MQ_IOSCHED_DEFAULT_ADIOS
++	if (!strcmp(elevator_name, "mq-deadline"))
++		strlcpy(elevator_name, "adios", sizeof(elevator_name));
++#endif
++	e = elevator_get(q, elevator_name, true);
+ 	if (!e)
+ 		return -EINVAL;
+ 
