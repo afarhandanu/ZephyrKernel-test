@@ -126,7 +126,7 @@ def main():
   - `finasu`: FinaSU v1.5.0+ with dual-slot signature verification + SuSFS {susfs_ver}
   - `ksunext`: KernelSU-Next with native SuSFS {susfs_ver} integration
   - `sukisu`: SukiSU-Ultra with Kernel Patch Module (`CONFIG_KPM=y`) + SuSFS {susfs_ver}
-  - `zephyrsu`: ZephyrSU (SukiSU-Ultra fork, M1-M6 combine) with SuSFS {susfs_ver}
+  - `zephyrsu`: ZephyrSU (SukiSU-Ultra fork, M1-M6 combine) with Kernel Patch Module (`CONFIG_KPM=y`) + SuSFS {susfs_ver}
   - `ksu`: Upstream official KernelSU with SuSFS {susfs_ver}
   - `bakasu`: BakaSU root solution with SuSFS {susfs_ver}
   - `kowsu`: KowSU root solution with SuSFS {susfs_ver}

@@ -234,7 +234,7 @@ jobs:
           cp -r susfs/kernel_patches/include/linux/* kernel/include/linux/ 2>/dev/null || true
           cd kernel
           echo "Patching SUSFS into kernel tree..."
-          patch -p1 --fuzz=3 < ../susfs/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch || true
+          patch -p1 --fuzz=3 --no-backup-if-mismatch < ../susfs/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch
           # Fix unused function warnings under strict Clang Werror
           sed -i 's/static struct cred \*susfs_switch_to_ksu_domain/static __maybe_unused struct cred \*susfs_switch_to_ksu_domain/' fs/susfs.c
           sed -i 's/static void susfs_restore_creds/static __maybe_unused void susfs_restore_creds/' fs/susfs.c
@@ -268,28 +268,33 @@ jobs:
             ./scripts/config --file arch/arm64/configs/gki_defconfig -e KPM
           elif [ "$VARIANT" = "zephyrsu" ]; then
             # ZephyrSU setup.sh takes a commit/tag/branch (no "builtin" arg like SukiSU):
-            # "main" pins the verified M1-M6 combine tree (now 1dda138 incl. rebrand
-            # PR #24); no-arg would check out the stale v4.3.0-r2 tag instead. Manager cert is already
+            # "main" pins the verified M1-M6 combine tree (incl. rebrand PR #24 & KPM PR #26);
+            # no-arg would check out the stale v4.3.0-r2 tag instead. Manager cert is already
             # pinned in ZephyrSU's own kernel/Kbuild (0x02f5 / 7136496b...), so no
-            # second-signature hack like FinaSU. The sukisu compat fixes are
-            # already upstream in ZephyrSU (fallthrough; + pol->latest_granting),
-            # so they are intentionally not repeated here. SUSFS uses the default
-            # simonpunk gki-android14-6.1 branch, same as sukisu/finasu.
+            # second-signature hack like FinaSU. Apply 10_enable_susfs_for_zephyrsu.patch
+            # to wire SuSFS v2.4.0 inline hooks + Kconfig symbols into ZephyrSU@main
+            # while keeping ksu_syscall_table initialized for NetIsolate & init_module_filter.
             curl -LSs "https://raw.githubusercontent.com/afarhandanu/ZephyrSU/main/kernel/setup.sh" | bash -s main
             KSU_DIR="KernelSU"
+            (cd "$KSU_DIR" && patch -p1 --forward --no-backup-if-mismatch < ../../patches/10_enable_susfs_for_zephyrsu.patch)
+            ./scripts/config --file arch/arm64/configs/gki_defconfig -e KPM
           elif [ "$VARIANT" = "bakasu" ]; then
             curl -LSs "https://raw.githubusercontent.com/Baka-SU/BakaSU/main/kernel/setup.sh" | bash -s main
             KSU_DIR="KernelSU"
           elif [ "$VARIANT" = "kowsu" ]; then
             curl -LSs "https://raw.githubusercontent.com/KOWX712/KernelSU/master/kernel/setup.sh" | bash -s master
             KSU_DIR="KernelSU"
-            (cd "$KSU_DIR" && patch -p1 --fuzz=3 --forward < ../../workbench/kernel/ksu/susfs/patches/10_enable_susfs_for_kowsu.patch)
+            (cd "$KSU_DIR" && patch -p1 --fuzz=3 --forward --no-backup-if-mismatch < ../../workbench/kernel/ksu/susfs/patches/10_enable_susfs_for_kowsu.patch)
           elif [ "$VARIANT" = "ksu" ]; then
             curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
             KSU_DIR="KernelSU"
-            (cd "$KSU_DIR" && patch -p1 --fuzz=3 --forward < ../../susfs/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch) || true
+            (cd "$KSU_DIR" && patch -p1 --fuzz=3 --forward --no-backup-if-mismatch < ../../susfs/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch)
           fi
-          python3 ../workbench/kernel/ksu/susfs/priority_uid_filter_compat.py "$KSU_DIR" include/linux/susfs.h fs/susfs.c || true
+          if ! grep -q "^config KSU_SUSFS" "$KSU_DIR/kernel/Kconfig"; then
+            echo "ERROR: config KSU_SUSFS missing from $KSU_DIR/kernel/Kconfig for variant $VARIANT!" >&2
+            exit 1
+          fi
+          python3 ../workbench/kernel/ksu/susfs/priority_uid_filter_compat.py "$KSU_DIR" include/linux/susfs.h fs/susfs.c
           echo "Enabling KSU & SUSFS in gki_defconfig..."
           ./scripts/config --file arch/arm64/configs/gki_defconfig -e KSU
           ./scripts/config --file arch/arm64/configs/gki_defconfig -e KSU_SUSFS
@@ -454,9 +459,20 @@ jobs:
           fi
           echo "Generating gki_defconfig..."
           make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" LLVM=1 LLVM_IAS=1 $EXTRA_MAKE_ARGS KBUILD_BUILD_USER="kucingbalap1644" KBUILD_BUILD_HOST="ZephyrCI" gki_defconfig
+          if [ "${{ matrix.variant }}" != "vanilla" ]; then
+            echo "=== Verifying KSU & SUSFS in resolved out/.config ==="
+            grep -E "^CONFIG_KSU(=|_)" out/.config
+            grep -q "^CONFIG_KSU=y" out/.config || { echo "FATAL: CONFIG_KSU=y was dropped from out/.config!" >&2; exit 1; }
+            grep -q "^CONFIG_KSU_SUSFS=y" out/.config || { echo "FATAL: CONFIG_KSU_SUSFS=y was dropped from out/.config!" >&2; exit 1; }
+          fi
           
           echo "Compiling Kernel Image..."
           make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" LLVM=1 LLVM_IAS=1 $EXTRA_MAKE_ARGS KBUILD_BUILD_USER="kucingbalap1644" KBUILD_BUILD_HOST="ZephyrCI" KCFLAGS="-Wno-unused-function -Wno-error" Image
+          if [ "${{ matrix.variant }}" != "vanilla" ]; then
+            echo "=== Verifying compiled SUSFS & KSU objects ==="
+            [ -f out/fs/susfs.o ] || { echo "FATAL: out/fs/susfs.o was not built!" >&2; exit 1; }
+            ls -lh out/fs/susfs.o
+          fi
           echo "=== ccache Statistics ==="
           ccache -s
       - name: Package AnyKernel3 Flashable ZIP
