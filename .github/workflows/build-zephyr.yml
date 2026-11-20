@@ -121,6 +121,15 @@ jobs:
           echo "Applying OpenSSL 3 certs/extract-cert.c key_pass fix..."
           sed -i 's/#ifdef USE_PKCS11_ENGINE/#ifndef OPENSSL_NO_ENGINE/' kernel/certs/extract-cert.c
           grep -q "#ifndef OPENSSL_NO_ENGINE" kernel/certs/extract-cert.c
+          echo "Applying kallsyms_markers zero-sentinel fix for manager KPM patching..."
+          python3 -c '
+          p = "kernel/scripts/kallsyms.c"
+          s = open(p).read()
+          t = "\toutput_label(\"kallsyms_seqs_of_names\");"
+          assert s.count(t) == 1
+          open(p, "w").write(s.replace(t, "\tprintf(\"\\t.long\\t0\\n\");\n" + t, 1))
+          '
+          grep -q 'printf("\\t.long\\t0\\n");' kernel/scripts/kallsyms.c
       - name: Load Device Verified Working Config (zephyr_defconfig)
         run: |
           echo "Applying verified KMI-compatible config from device..."
