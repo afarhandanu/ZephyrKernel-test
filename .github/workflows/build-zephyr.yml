@@ -314,6 +314,9 @@ jobs:
           ./scripts/config --file arch/arm64/configs/gki_defconfig -e KSU_SUSFS_PRIORITY_UID_FILTER
           echo "Verifying uniform SUSFS v2.4.0 across all root variants..."
           grep "SUSFS_VERSION" include/linux/susfs.h
+          echo "Integrating NoMount VFS path redirection subsystem..."
+          curl -LSs "https://raw.githubusercontent.com/maxsteeel/nomount/master/kernel/setup.sh" | bash
+          ./scripts/config --file arch/arm64/configs/gki_defconfig -e NOMOUNT
       - name: Disable KSU for Vanilla Variant
         if: matrix.variant == 'vanilla'
         run: |
@@ -466,18 +469,20 @@ jobs:
           echo "Generating gki_defconfig..."
           make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" LLVM=1 LLVM_IAS=1 $EXTRA_MAKE_ARGS KBUILD_BUILD_USER="kucingbalap1644" KBUILD_BUILD_HOST="ZephyrCI" gki_defconfig
           if [ "${{ matrix.variant }}" != "vanilla" ]; then
-            echo "=== Verifying KSU & SUSFS in resolved out/.config ==="
-            grep -E "^CONFIG_KSU(=|_)" out/.config
+            echo "=== Verifying KSU, SUSFS & NoMount in resolved out/.config ==="
+            grep -E "^CONFIG_(KSU(=|_)|NOMOUNT=)" out/.config
             grep -q "^CONFIG_KSU=y" out/.config || { echo "FATAL: CONFIG_KSU=y was dropped from out/.config!" >&2; exit 1; }
             grep -q "^CONFIG_KSU_SUSFS=y" out/.config || { echo "FATAL: CONFIG_KSU_SUSFS=y was dropped from out/.config!" >&2; exit 1; }
+            grep -q "^CONFIG_NOMOUNT=y" out/.config || { echo "FATAL: CONFIG_NOMOUNT=y was dropped from out/.config!" >&2; exit 1; }
           fi
           
           echo "Compiling Kernel Image..."
           make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" LLVM=1 LLVM_IAS=1 $EXTRA_MAKE_ARGS KBUILD_BUILD_USER="kucingbalap1644" KBUILD_BUILD_HOST="ZephyrCI" KCFLAGS="-Wno-unused-function -Wno-error" Image
           if [ "${{ matrix.variant }}" != "vanilla" ]; then
-            echo "=== Verifying compiled SUSFS & KSU objects ==="
+            echo "=== Verifying compiled SUSFS, KSU & NoMount objects ==="
             [ -f out/fs/susfs.o ] || { echo "FATAL: out/fs/susfs.o was not built!" >&2; exit 1; }
-            ls -lh out/fs/susfs.o
+            [ -f out/fs/nomount/nomount.o ] || { echo "FATAL: out/fs/nomount/nomount.o was not built!" >&2; exit 1; }
+            ls -lh out/fs/susfs.o out/fs/nomount/nomount.o
           fi
           echo "=== ccache Statistics ==="
           ccache -s
