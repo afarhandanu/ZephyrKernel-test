@@ -139,7 +139,7 @@ jobs:
           set -euo pipefail
           git clone --depth=1 https://github.com/WildKernels/kernel_patches.git wild_patches
           git clone --depth=1 https://github.com/SukiSU-Ultra/SukiSU_patch.git sukisu_patch
-          git clone --depth=1 https://github.com/dikafarabian/workbench.git workbench
+          git clone --depth=1 https://github.com/Andrews571/SAGA-Build.git saga_build
           cd kernel
           echo "1. Applying SYSVIPC task_struct KABI padding fix (prevents +24 byte shift in task_struct)..."
           patch -p1 < ../wild_patches/common/droidspaces/fix_sysvipc_kabi_6_7_8.patch
@@ -164,31 +164,31 @@ jobs:
           grep -q "custom_module_blacklist" kernel/module/main.c
           echo "4. Applying KABI-compliant TCP BBRv3 congestion control + boot enforcer..."
           patch -p1 --fuzz=3 < ../wild_patches/common/bbrv3/0001-net-tcp-backport-BBRv3-to-android14-6.1.patch
-          python3 ../workbench/kernel/patches/bbrv3/enforcer.py net/ipv4/tcp_cong.c
+          python3 ../saga_build/kernel/addons/bbrv3/enforcer.py net/ipv4/tcp_cong.c
           echo "5. Applying NTSYNC synchronization primitive driver..."
           patch -p1 < ../wild_patches/common/ntsync/ntsync_base.patch
           patch -p1 < ../wild_patches/common/ntsync/ntsync_compat_android14-6.1.patch
           echo "6. Setting up Baseband Security Guard (BBG)..."
           curl -fsSL "https://raw.githubusercontent.com/vc-teahouse/Baseband-guard/main/setup.sh" | bash
           sed -i '/^config LSM$/,/^help$/{ /^[[:space:]]*default/ { /baseband_guard/! s/selinux/selinux,baseband_guard/ } }' security/Kconfig
-          echo "7. Applying BORE CPU Scheduler (v7.0.0)..."
-          patch -p1 --fuzz=3 < ../workbench/kernel/patches/bore/bore-v7.0.0.patch
+          echo "7. Applying BORE CPU Scheduler (v6.8.0)..."
+          patch -p1 --fuzz=3 < ../saga_build/kernel/addons/bore/bore-android14-6.1-v6.8.0.patch
           echo "8. Applying le9uo Working Set Protection (v1.15)..."
-          patch -p1 --fuzz=3 < ../workbench/kernel/patches/le9uo/le9uo-v1.15.patch
+          patch -p1 --fuzz=3 < ../saga_build/kernel/addons/le9uo/le9uo-android14-6.1-v1.15.patch
           echo "9. Applying Kcompressd (v0.5), Schedutil Catch-up, UFS WriteBooster Catch-up, & Workqueue Catch-up..."
-          patch -p1 --fuzz=3 < ../workbench/kernel/patches/kcompressd/kcompressd-v0.5.patch
-          patch -p1 --fuzz=3 < ../workbench/kernel/patches/schedutil_catchup/schedutil_catchup.patch
-          patch -p1 --fuzz=3 < ../workbench/kernel/patches/ufs_writebooster_catchup/ufs_writebooster_catchup.patch
-          patch -p1 --fuzz=3 < ../workbench/kernel/patches/workqueue_catchup/workqueue_catchup.patch
+          patch -p1 --fuzz=3 < ../saga_build/kernel/addons/kcompressd/kcompressd-android14-6.1-v0.5.patch
+          patch -p1 --fuzz=3 < ../saga_build/kernel/core/schedutil_catchup/lote6_schedutil.patch
+          patch -p1 --fuzz=3 < ../saga_build/kernel/core/ufs_writebooster_catchup/lote4_ufs_writebooster.patch
+          patch -p1 --fuzz=3 < ../saga_build/kernel/core/workqueue_catchup/lote5_workqueue.patch
           echo "10. Integrating Re:Kernel (Binder/Signal Netlink server)..."
-          python3 ../workbench/kernel/addons/rekernel/inject.py .
+          python3 ../saga_build/kernel/addons/rekernel/inject.py .
           grep -q "Re:Kernel" drivers/android/binder.c
           grep -q "Re:Kernel" drivers/android/binder_alloc.c
           grep -q "Re:Kernel" kernel/signal.c
           echo "11. Applying LZ4 v1.10.0 (ARM64 NEON) + ZSTD v1.5.7 bump (lz4zstd)..."
           mkdir -p lib/lz4/lz4armv8
           curl -fsSL -o lib/lz4/lz4armv8/lz4armv8.S "https://raw.githubusercontent.com/mrcxlinux/kernel_patches/main/zram/lz4armv8.S"
-          cp ../workbench/kernel/addons/lz4zstd/lz4accel.h ../workbench/kernel/addons/lz4zstd/lz4accel.c lib/lz4/lz4armv8/
+          sed -n '/^cat > lib\/lz4\/lz4armv8\/lz4accel.h/,/^LZ4ACCEL_C_EOF$/p' ../saga_build/kernel/addons/lz4zstd/lz4zstd.sh | sh
           curl -fsSL "https://raw.githubusercontent.com/mrcxlinux/kernel_patches/main/zram/001-lz4.patch" | patch -p1 --fuzz=3 --forward --no-backup-if-mismatch || true
           grep -q "LZ4_VERSION_MINOR 10" lib/lz4/lz4.h
           if [ -f lib/lz4/lz4hc.c ] && ! grep -q '#ifndef MIN' lib/lz4/lz4hc.c; then
@@ -225,10 +225,10 @@ jobs:
           patch -p1 --fuzz=3 < ../wild_patches/common/f2fs_reduce_congestion.patch
           patch -p1 --fuzz=3 < ../wild_patches/common/f2fs_enlarge_min_fsync_blocks.patch
           patch -p1 --fuzz=3 < ../wild_patches/common/reduce_gc_thread_sleep_time.patch
-          echo "13. Applying ADIOS v3.3.0 I/O Scheduler (enforced over mq-deadline)..."
-          patch -p1 --fuzz=3 < ../workbench/kernel/patches/adios/adios-v3.3.0.patch
-          patch -p1 < ../patches/adios_over_mq_deadline.patch
-          grep -q 'ADIOS_VERSION "3.3.0"' block/adios.c
+          echo "13. Applying ADIOS v3.3.5 I/O Scheduler (enforced over mq-deadline)..."
+          patch -p1 --fuzz=3 < ../saga_build/kernel/addons/adios/adios-android14-6.1-v3.3.5.patch
+          patch -p1 --fuzz=3 < ../patches/adios_over_mq_deadline.patch
+          grep -q 'ADIOS_VERSION "3.3.' block/adios.c
       - name: "Integrate Root Variant (${{ matrix.variant }}) & SUSFS Patches"
         if: matrix.variant != 'vanilla'
         run: |
@@ -275,7 +275,6 @@ jobs:
           elif [ "$VARIANT" = "sukisu" ]; then
             curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s builtin
             KSU_DIR="KernelSU"
-            python3 ../workbench/kernel/ksu/variants/sukisu/fallthrough_compat.py "${KSU_DIR}/kernel/policy/allowlist.c" || true
             echo "Patching SukiSU upstream policydb->latest_granting typo in rules.c..."
             sed -i 's/policydb->latest_granting/pol->latest_granting/g' "${KSU_DIR}/kernel/selinux/rules.c"
             ./scripts/config --file arch/arm64/configs/gki_defconfig -e KPM
@@ -297,7 +296,7 @@ jobs:
           elif [ "$VARIANT" = "kowsu" ]; then
             curl -LSs "https://raw.githubusercontent.com/KOWX712/KernelSU/master/kernel/setup.sh" | bash -s master
             KSU_DIR="KernelSU"
-            (cd "$KSU_DIR" && patch -p1 --fuzz=3 --forward --no-backup-if-mismatch < ../../workbench/kernel/ksu/susfs/patches/10_enable_susfs_for_kowsu.patch)
+            (cd "$KSU_DIR" && patch -p1 --fuzz=3 --forward --no-backup-if-mismatch < ../../susfs/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch)
           elif [ "$VARIANT" = "ksu" ]; then
             curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
             KSU_DIR="KernelSU"
@@ -307,7 +306,6 @@ jobs:
             echo "ERROR: config KSU_SUSFS missing from $KSU_DIR/kernel/Kconfig for variant $VARIANT!" >&2
             exit 1
           fi
-          python3 ../workbench/kernel/ksu/susfs/priority_uid_filter_compat.py "$KSU_DIR" include/linux/susfs.h fs/susfs.c
           echo "Enabling KSU & SUSFS in gki_defconfig..."
           ./scripts/config --file arch/arm64/configs/gki_defconfig -e KSU
           ./scripts/config --file arch/arm64/configs/gki_defconfig -e KSU_SUSFS
