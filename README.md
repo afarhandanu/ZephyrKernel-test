@@ -7,7 +7,7 @@
 ![Kernel Version](https://img.shields.io/badge/Linux-6.1.190%20LTS-blue?logo=linux)
 ![KMI](https://img.shields.io/badge/KMI-android14--11--Zephyr-success?logo=android)
 ![Compiler](https://img.shields.io/badge/Compiler-Neutron%20Clang%2024.0.0%20%2B%20ThinLTO-purple?logo=llvm)
-![Scheduler](https://img.shields.io/badge/Sched-BORE%20v7.0.0%20%2B%20ADIOS%203.3.0-red?logo=linux)
+![Scheduler](https://img.shields.io/badge/Sched-BORE%20v7.0.0%20%2B%20ADIOS%203.3.5-red?logo=linux)
 ![Builder](https://img.shields.io/badge/Builder-kucingbalap1644%40ZephyrCI-orange)
 
 **High-performance, KABI-compliant Android Generic Kernel Image (GKI 2.0) built for `android14-6.1` devices (tested on Xiaomi POCO X7 / Redmi Note 14 Pro 5G `malachite` — MediaTek Dimensity 7300-Ultra `mt6878`), upstreamed to Linux 6.1.190 LTS matching SAGA architecture.**
@@ -24,7 +24,7 @@
 - **Upstream Linux 6.1.190 LTS Core:** Fully synced to upstream Linux 6.1.190 LTS with verified Android Common Kernel (ACK) fixups and MediaTek Dimensity 7300-Ultra / MT6878 compatibility (aligned with SAGA 190 architecture with `timer_delete_sync` and `DEFINE_FREE(fwnode_handle)` shims).
 - **Power-Efficient Workqueues (`CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y`):** Shifts workqueues to energy-efficient CPU cores when idle, reducing background battery drain significantly.
 - **BORE CPU Scheduler (`v7.0.0`):** *Burst-Oriented Response Enhancer* (`kernel.sched_bore = 1`) for ultra-responsive UI rendering, low touch latency, and smooth multitasking under heavy load.
-- **ADIOS I/O Scheduler (`v3.3.0` Default Over `mq-deadline`):** *Adaptive Deadline I/O Scheduler* (`CONFIG_MQ_IOSCHED_ADIOS=y` + `CONFIG_MQ_IOSCHED_DEFAULT_ADIOS=y`) with learning-based adaptive latency control and transparent override against vendor `mq-deadline` init scripts (`init.mt6878*.rc`) for lower UFS latency.
+- **ADIOS I/O Scheduler (`v3.3.5` Default Over `mq-deadline`):** *Adaptive Deadline I/O Scheduler* (`CONFIG_MQ_IOSCHED_ADIOS=y` + `CONFIG_MQ_IOSCHED_DEFAULT_ADIOS=y`) with learning-based adaptive latency control and transparent override against vendor `mq-deadline` init scripts (`init.mt6878*.rc`) for lower UFS latency.
 - **Neutron Clang `24.0.0git` + LLD `24.0.0`:** Configurable Link-Time Optimization supporting **ThinLTO (`CONFIG_LTO_CLANG_THIN=y`)**, **FullLTO (`CONFIG_LTO_CLANG_FULL=y`)**, or **NoLTO (`CONFIG_LTO_NONE=y`)**, paired with **Clang Control Flow Integrity (`CONFIG_CFI_CLANG=y`)** and persistent **`ccache`** compiler caching.
 - **Mainline Catch-up Backports:** Includes `schedutil_catchup`, `workqueue_catchup`, and `ufs_writebooster_catchup` for optimal frequency scaling and UFS storage throughput.
 

@@ -75,7 +75,7 @@ FRAGMENT_FEATURES = {
     "CPU & Scheduler": [
         "Ondemand Governor (included)",
         "Frame Warning Disabled",
-        "I/O Scheduler (ADIOS v3.3.0 over MQ-Deadline, Kyber)",
+        "I/O Scheduler (ADIOS v3.3.5 over MQ-Deadline, Kyber)",
     ],
     "Network": [
         ("TCP Congestion Control", ["BBR", "BIC", "CUBIC", "Westwood", "HTCP"]),

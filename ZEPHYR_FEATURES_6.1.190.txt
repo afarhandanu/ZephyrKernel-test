@@ -49,7 +49,7 @@ TABLE OF CONTENTS
     - Verification:
       $ cat /proc/sys/kernel/sched_bore -> Output: 1
 
-[*] ADIOS I/O Scheduler (Adaptive Deadline I/O Scheduler v3.3.0 over mq-deadline):
+[*] ADIOS I/O Scheduler (Adaptive Deadline I/O Scheduler v3.3.5 over mq-deadline):
     - Config: CONFIG_MQ_IOSCHED_ADIOS=y, CONFIG_MQ_IOSCHED_DEFAULT_ADIOS=y
     - Purpose: Learning-based adaptive deadline control for blk-mq UFS storage,
       set as default MQ scheduler and enforced over vendor mq-deadline init writes.
