@@ -40,15 +40,21 @@ def main():
     kernel_ver = os.environ.get("KERNEL_VER", "6.1.190")
     susfs_ver = get_susfs_version()
     is_append = "--append" in sys.argv or os.environ.get("APPEND_RELEASE_NOTES") == "1"
+    if kernel_ver == "6.1.190":
+        base_tag = "SAGA Architecture Aligned"
+        base_note = "upgraded from 6.1.187 to 6.1.190 via verified SAGA architecture with timer/fwnode compat shims"
+    else:
+        base_tag = "Luminaire android14-6.1-lts Base"
+        base_note = f"built on the Luminaire `android14-6.1-lts` tree, which merges upstream {kernel_ver} into the Android Common Kernel"
 
     details = f"""
 ---
 
 ## 📖 Detailed Changelog & System Architecture
 
-### 🛡️ Linux 6.1.190 LTS Upstream Sync & Security CVE Backports (SAGA Architecture Aligned)
+### 🛡️ Linux {kernel_ver} LTS Upstream Sync & Security CVE Backports ({base_tag})
 
-- **Upstream Linux {kernel_ver} LTS Base:** Full merge and clean ancestry integration with official Linux {kernel_ver} LTS stable release (upgraded from 6.1.187 to 6.1.190 via verified SAGA architecture with timer/fwnode compat shims).
+- **Upstream Linux {kernel_ver} LTS Base:** Full merge and clean ancestry integration with official Linux {kernel_ver} LTS stable release ({base_note}).
 - **Pinctrl / Pinmux Race Fix (`8434dec94`):** Fixed race condition causing `mux_owner` to become NULL while `mux_usecount` is actively incremented.
 - **Block Layer Tag Leak Fix (`26d495f0f6`):** Resolved memory leak in `blk_mq_realloc_tag_set_tags()` where request tags remained allocated when shrinking `nr_hw_queues`.
 - **F2FS Checkpoint Sysfs Fix (`8b927ad2d1`):** Converted checkpoint thread priority reading to modern `IOPRIO_PRIO_LEVEL` macro for sysfs exports.
