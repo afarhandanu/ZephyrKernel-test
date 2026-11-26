@@ -592,6 +592,22 @@ jobs:
             --title "$TITLE" \
             --notes-file release_notes.md \
             --latest
+      - name: Sync README.md to Linux 6.1.190 (Latest Built Version)
+        if: ${{ needs.build.result == 'success' }}
+        continue-on-error: true
+        run: |
+          git pull --ff-only origin "${GITHUB_REF_NAME}"
+          python3 scripts/render_readme.py --version 6.1.190
+          if git diff --quiet -- README.md; then
+            echo "README.md already shows Linux 6.1.190, nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "docs: README now shows Linux 6.1.190 (auto-synced by build)"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
       - name: Push Release & Flashable ZIPs to Telegram
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
