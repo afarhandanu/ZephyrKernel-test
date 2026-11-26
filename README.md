@@ -17,12 +17,12 @@
 </div>
 
 > [!NOTE]
-> **This page shows Linux 6.1.193, the version built most recently.** It is regenerated automatically by whichever build workflow ran last.
+> **This page shows Linux 6.1.193, the version built most recently.** Looking for the other version? Both stay available, use the download links below. All builds are kept in [Releases](https://github.com/afarhandanu/ZephyrKernel-test/releases).
 
-| Version | Base source | Workflow | Release tags | |
+| Version | Base source | Download | Build | |
 | :--- | :--- | :--- | :--- | :--- |
-| **6.1.190** | SAGA `upgrade-190-v2` | [`build-zephyr.yml`](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr.yml) | `v6.1-<date>-...` |  |
-| **6.1.193** | Luminaire `android14-6.1-lts` | [`build-zephyr-193.yml`](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr-193.yml) | `v6.1.193-<date>-...` | **shown on this page** |
+| **6.1.190** | SAGA `upgrade-190-v2` | [📥 6.1.190 releases](https://github.com/afarhandanu/ZephyrKernel-test/releases?q=6.1.190&expanded=true) | [`build-zephyr.yml`](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr.yml) |  |
+| **6.1.193** | Luminaire `android14-6.1-lts` | [📥 6.1.193 releases](https://github.com/afarhandanu/ZephyrKernel-test/releases?q=6.1.193&expanded=true) | [`build-zephyr-193.yml`](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr-193.yml) | **shown on this page** |
 
 ---
 
