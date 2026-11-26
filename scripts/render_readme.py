@@ -41,17 +41,18 @@ VERSIONS = {
 def version_table(current):
     rows = [
         "> [!NOTE]",
-        "> **This page shows Linux %s, the version built most recently.** It is regenerated "
-        "automatically by whichever build workflow ran last." % current,
+        "> **This page shows Linux %s, the version built most recently.** Looking for the other "
+        "version? Both stay available, use the download links below. All builds are kept in "
+        "[Releases](%s/releases)." % (current, REPO),
         "",
-        "| Version | Base source | Workflow | Release tags | |",
+        "| Version | Base source | Download | Build | |",
         "| :--- | :--- | :--- | :--- | :--- |",
     ]
     for ver, v in VERSIONS.items():
         mark = "**shown on this page**" if ver == current else ""
         rows.append(
-            "| **%s** | %s | [`%s`](%s/actions/workflows/%s) | %s | %s |"
-            % (ver, v["base"], v["workflow_file"], REPO, v["workflow_file"], v["tags"], mark)
+            "| **%s** | %s | [📥 %s releases](%s/releases?q=%s&expanded=true) | [`%s`](%s/actions/workflows/%s) | %s |"
+            % (ver, v["base"], ver, REPO, ver, v["workflow_file"], REPO, v["workflow_file"], mark)
         )
     return "\n".join(rows)
 
