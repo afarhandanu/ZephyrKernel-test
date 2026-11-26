@@ -1,35 +1,35 @@
 <div align="center">
 
-# ⚡ ZephyrKernel — GKI 2.0 (`android14-6.1.190`)
+# ⚡ ZephyrKernel — GKI 2.0 (`android14-6.1.193`)
 
-[![Build ZephyrKernel (GKI 6.1.190)](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr.yml/badge.svg)](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr.yml)
+[![Build ZephyrKernel (GKI 6.1.193)](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr-193.yml/badge.svg)](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr-193.yml)
 [![Latest Release](https://img.shields.io/github/v/release/afarhandanu/ZephyrKernel-test?label=Latest%20Release&color=00b4d8)](https://github.com/afarhandanu/ZephyrKernel-test/releases/latest)
-![Kernel Version](https://img.shields.io/badge/Linux-6.1.190%20LTS-blue?logo=linux)
+![Kernel Version](https://img.shields.io/badge/Linux-6.1.193%20LTS-blue?logo=linux)
 ![KMI](https://img.shields.io/badge/KMI-android14--11--Zephyr-success?logo=android)
 ![Compiler](https://img.shields.io/badge/Compiler-Neutron%20Clang%2024.0.0%20%2B%20ThinLTO-purple?logo=llvm)
 ![Scheduler](https://img.shields.io/badge/Sched-BORE%20v7.0.0%20%2B%20ADIOS%203.3.5-red?logo=linux)
 ![Builder](https://img.shields.io/badge/Builder-kucingbalap1644%40ZephyrCI-orange)
 
-**High-performance, KABI-compliant Android Generic Kernel Image (GKI 2.0) built for `android14-6.1` devices (tested on Xiaomi POCO X7 / Redmi Note 14 Pro 5G `malachite` — MediaTek Dimensity 7300-Ultra `mt6878`), upstreamed to Linux 6.1.190 LTS matching SAGA architecture.**
+**High-performance, KABI-compliant Android Generic Kernel Image (GKI 2.0) built for `android14-6.1` devices (tested on Xiaomi POCO X7 / Redmi Note 14 Pro 5G `malachite` — MediaTek Dimensity 7300-Ultra `mt6878`), upstreamed to Linux 6.1.193 LTS on the Luminaire `android14-6.1-lts` base.**
 
-[📥 **Download Latest Release**](https://github.com/afarhandanu/ZephyrKernel-test/releases/latest) · [⚙️ **Run CI Build**](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr.yml)
+[📥 **Download Latest Release**](https://github.com/afarhandanu/ZephyrKernel-test/releases/latest) · [⚙️ **Run CI Build**](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr-193.yml)
 
 </div>
 
 > [!NOTE]
-> **Two kernel versions are built from this repository.** Each has its own workflow, release tags and README.
+> **This page shows Linux 6.1.193, the version built most recently.** It is regenerated automatically by whichever build workflow ran last.
 
-| Version | Base source | Workflow | Release tags | Docs |
+| Version | Base source | Workflow | Release tags | |
 | :--- | :--- | :--- | :--- | :--- |
-| **6.1.190** | SAGA `upgrade-190-v2` | [`build-zephyr.yml`](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr.yml) | `v6.1-<date>-...` | This page |
-| **6.1.193** | Luminaire `android14-6.1-lts` | [`build-zephyr-193.yml`](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr-193.yml) | `v6.1.193-<date>-...` | [README-6.1.193.md](README-6.1.193.md) |
+| **6.1.190** | SAGA `upgrade-190-v2` | [`build-zephyr.yml`](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr.yml) | `v6.1-<date>-...` |  |
+| **6.1.193** | Luminaire `android14-6.1-lts` | [`build-zephyr-193.yml`](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr-193.yml) | `v6.1.193-<date>-...` | **shown on this page** |
 
 ---
 
 ## ✨ Key Features & Enhancements
 
 ### 🔥 CPU, Scheduler, & Toolchain
-- **Upstream Linux 6.1.190 LTS Core:** Fully synced to upstream Linux 6.1.190 LTS with verified Android Common Kernel (ACK) fixups and MediaTek Dimensity 7300-Ultra / MT6878 compatibility (aligned with SAGA 190 architecture with `timer_delete_sync` and `DEFINE_FREE(fwnode_handle)` shims).
+- **Upstream Linux 6.1.193 LTS Core:** Built on the Luminaire `android14-6.1-lts` tree, which merges upstream Linux 6.1.193 LTS into the Android Common Kernel, with the same Zephyr KMI fixes and addon patches applied on top as on 6.1.190.
 - **Power-Efficient Workqueues (`CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y`):** Shifts workqueues to energy-efficient CPU cores when idle, reducing background battery drain significantly.
 - **BORE CPU Scheduler (`v7.0.0`):** *Burst-Oriented Response Enhancer* (`kernel.sched_bore = 1`) for ultra-responsive UI rendering, low touch latency, and smooth multitasking under heavy load.
 - **ADIOS I/O Scheduler (`v3.3.5` Default Over `mq-deadline`):** *Adaptive Deadline I/O Scheduler* (`CONFIG_MQ_IOSCHED_ADIOS=y` + `CONFIG_MQ_IOSCHED_DEFAULT_ADIOS=y`) with learning-based adaptive latency control and transparent override against vendor `mq-deadline` init scripts (`init.mt6878*.rc`) for lower UFS latency.
@@ -76,9 +76,9 @@
 
 ## 🚀 How to Build & Release via GitHub Actions
 
-1. Open the [**Actions**](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr.yml) tab.
-2. Select **Build ZephyrKernel (GKI 6.1.190)** and click **Run workflow**.
-3. Choose your desired options (Branding is permanently locked to `6.1.190-android14-11-Zephyr` / `kucingbalap1644@ZephyrCI` and protected by owner verification):
+1. Open the [**Actions**](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr-193.yml) tab.
+2. Select **Build ZephyrKernel (GKI 6.1.193)** and click **Run workflow**.
+3. Choose your desired options (Branding is permanently locked to `6.1.193-android14-11-Zephyr` / `kucingbalap1644@ZephyrCI` and protected by owner verification):
    - **Root Variant (`root_variant`):**
      - `finasu` — **FinaSU v1.5.0+** + SUSFS v2.4.0 Built-in (Default)
      - `ksunext` — **KernelSU-Next (`dev-susfs`)** + SUSFS Built-in
@@ -104,7 +104,7 @@
 > [!IMPORTANT]
 > Always back up your stock `boot` and `init_boot` images before flashing any custom kernel.
 
-1. Download the latest `Zephyr-GKI-6.1.190-*.zip` from [**Releases**](https://github.com/afarhandanu/ZephyrKernel-test/releases/latest).
+1. Download the latest `Zephyr-GKI-6.1.193-*.zip` from [**Releases**](https://github.com/afarhandanu/ZephyrKernel-test/releases/latest).
 2. Flash the `.zip` using **Franco Kernel Manager (FKM)**, **Kernel Flasher**, **Bolt**, or Custom Recovery.
 3. Reboot and enjoy!
 
