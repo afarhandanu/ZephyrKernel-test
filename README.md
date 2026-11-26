@@ -16,6 +16,14 @@
 
 </div>
 
+> [!NOTE]
+> **Two kernel versions are built from this repository.** Each has its own workflow, release tags and README.
+
+| Version | Base source | Workflow | Release tags | Docs |
+| :--- | :--- | :--- | :--- | :--- |
+| **6.1.190** | SAGA `upgrade-190-v2` | [`build-zephyr.yml`](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr.yml) | `v6.1-<date>-...` | This page |
+| **6.1.193** | Luminaire `android14-6.1-lts` | [`build-zephyr-193.yml`](https://github.com/afarhandanu/ZephyrKernel-test/actions/workflows/build-zephyr-193.yml) | `v6.1.193-<date>-...` | [README-6.1.193.md](README-6.1.193.md) |
+
 ---
 
 ## ✨ Key Features & Enhancements
