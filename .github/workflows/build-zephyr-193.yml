@@ -185,6 +185,11 @@ jobs:
           patch -p1 --fuzz=3 < ../saga_build/kernel/core/schedutil_catchup/lote6_schedutil.patch
           patch -p1 --fuzz=3 < ../saga_build/kernel/core/ufs_writebooster_catchup/lote4_ufs_writebooster.patch
           patch -p1 --fuzz=3 < ../saga_build/kernel/core/workqueue_catchup/lote5_workqueue.patch
+          echo "9b. Applying Reflex v0.4.0 CPUFreq governor (extra governor, schedutil stays default)..."
+          curl -fsSL -o ../reflex-v0.4.0.patch "https://raw.githubusercontent.com/dikafarabian/workbench/2601337d61ee67d6ad9d2e0c7fa5dcd608066e10/kernel/patches/reflex/reflex-v0.4.0.patch"
+          echo "fbd748d166bbf6580d24659cf69f11303de0ddee3fd9e98ea4c6df54d81239be  ../reflex-v0.4.0.patch" | sha256sum -c -
+          patch -p1 --fuzz=3 < ../reflex-v0.4.0.patch
+          grep -q 'CPUFREQ_REFLEX_VERSION  "0.4.0"' drivers/cpufreq/cpufreq_reflex.c
           echo "10. Integrating Re:Kernel (Binder/Signal Netlink server)..."
           python3 ../saga_build/kernel/addons/rekernel/inject.py .
           grep -q "Re:Kernel" drivers/android/binder.c
@@ -408,6 +413,7 @@ jobs:
 
           # 4. BORE CPU Scheduler, ADIOS v3.3.5 I/O Scheduler & le9uo Working Set Protection (MGLRU disabled for MediaTek stability)
           ./scripts/config --file arch/arm64/configs/gki_defconfig -e SCHED_BORE
+          ./scripts/config --file arch/arm64/configs/gki_defconfig -e CPU_FREQ_GOV_REFLEX
           ./scripts/config --file arch/arm64/configs/gki_defconfig -e MQ_IOSCHED_ADIOS
           ./scripts/config --file arch/arm64/configs/gki_defconfig -e MQ_IOSCHED_DEFAULT_ADIOS
           ./scripts/config --file arch/arm64/configs/gki_defconfig -e LRU_GEN
@@ -578,7 +584,7 @@ jobs:
             echo "| **Toolchain** | \`Neutron Clang 24.0.0git + LLD 24.0.0 (ccache enabled)\` |"
             echo "| **LTO Modes Built** | \`${{ needs.setup-matrix.outputs.ltos }}\` |"
             echo "| **Root Variants Built** | \`${{ needs.setup-matrix.outputs.variants }}\` (synced with SuSFS ${SUSFS_VER}) |"
-            echo "| **CPU Scheduler** | \`EEVDF + BORE v7.0.0 + Schedutil/Workqueue Catch-up\` |"
+            echo "| **CPU Scheduler** | \`EEVDF + BORE v7.0.0 + Reflex v0.4.0 Governor + Schedutil/Workqueue Catch-up\` |"
             echo "| **I/O Scheduler** | \`ADIOS v3.3.5 (Default over MQ-Deadline) + UFS WriteBooster Catch-up\` |"
             echo "| **Memory & ZRAM** | \`le9uo v1.15 (MGLRU Off) + LZ4 v1.10.0 NEON + ZSTD v1.5.7 + LZ4KD + Kcompressd v0.5\` |"
             echo "| **Networking** | \`TCP BBRv3 + FQ Default Pacing (No pfifo) + CAKE + MPTCP (WiFi + Cell) + Built-in USB Gigabit LAN (RTL8152/AX88179) + TTL/HL Bypass\` |"
